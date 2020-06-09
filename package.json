@@ -1,0 +1,58 @@
+{
+	"name": "safe_tunnel",
+	"version": "0.1.0",
+	"private": true,
+	"main": "public/electron.js",
+	"homepage": "./",
+	"dependencies": {
+		"electron-is-dev": "^1.2.0",
+		"node-sass": "^4.14.1",
+		"ws": "^7.3.0"
+	},
+	"devDependencies": {
+		"@testing-library/react": "^9.3.2",
+		"@testing-library/user-event": "^7.1.2",
+		"concurrently": "^5.2.0",
+		"cross-env": "^7.0.2",
+		"electron": "^9.0.2",
+		"electron-builder": "^22.7.0",
+		"electron-devtools-installer": "^3.0.0",
+		"javascript-obfuscator": "^1.1.0",
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1",
+		"react-scripts": "3.4.1",
+		"tailwindcss": "^1.4.6",
+		"wait-on": "^5.0.1"
+	},
+	"scripts": {
+		"dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+		"start": "react-scripts start",
+		"build:tailwind": "tailwindcss build src/assets/scss/tailwind.css -o public/tailwind.generated.css",
+		"build": "react-scripts build && javascript-obfuscator build/electron.js --output build/electron.js --compact true --self-defending true",
+		"release-windows-x32": "electron-builder --windows --ia32 -c.extraMetadata.main=build/electron.js",
+		"release-windows-x64": "electron-builder --windows --x64 -c.extraMetadata.main=build/electron.js",
+		"release-macos": "electron-builder --macos -c.extraMetadata.main=build/electron.js -c.mac.identity=null",
+		"release-linux": "electron-builder --linux -c.extraMetadata.main=build/electron.js",
+		"pack-windows-32bit-portable": "electron-builder --windows portable --ia32 -c.extraMetadata.main=build/electron.js",
+		"pack-windows-64bit-portable": "electron-builder --windows portable --x64 -c.extraMetadata.main=build/electron.js",
+		"pack-macos-dmg": "electron-builder --macos dmg -c.extraMetadata.main=build/electron.js -c.mac.identity=null",
+		"pack-macos-zip": "electron-builder --macos zip -c.extraMetadata.main=build/electron.js -c.mac.identity=null",
+		"pack-linux-deb": "electron-builder --linux deb -c.extraMetadata.main=build/electron.js",
+		"pack-linux-appimage": "electron-builder --linux AppImage -c.extraMetadata.main=build/electron.js"
+	},
+	"eslintConfig": {
+		"extends": "react-app"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}
