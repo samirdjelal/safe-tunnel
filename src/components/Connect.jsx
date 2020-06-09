@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 class Connect extends Component {
-		constructor(props) {
+	constructor(props) {
 		super(props);
 		this.handleInputField = this.handleInputField.bind(this);
 	}
@@ -15,9 +15,10 @@ class Connect extends Component {
 						{/*<input type="text" id="create-uid" className="border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded mb-6"/>*/}
 						
 						<div className="mb-2">Full Name</div>
-						<input type="text" id="create-name" onKeyPress={this.handleInputField} className="border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded mb-6"/>
+						<input type="text" id="create-name" autoFocus={true} onKeyPress={this.handleInputField} className="border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded mb-6"/>
 						
-						<div onClick={this.props.handleWSConnect} className="bg-red-400 border-red-500 text-white rounded text-center py-3 cursor-pointer hover:bg-red-500 hover:border-red-600 border-b-4 ">Connect
+						<div onClick={this.props.handleWSConnect}
+						     className="bg-red-400 border-red-500 text-white rounded text-center py-3 cursor-pointer hover:bg-red-500 hover:border-red-600 border-b-4 ">Connect
 						</div>
 					</div>
 				

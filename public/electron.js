@@ -5,8 +5,11 @@ const WebSocket = require('ws');
 // const axios = require("axios");
 const path = require('path');
 const isDev = require('electron-is-dev');
+
 const WebSocketURL = 'ws://127.0.0.1:9999';
 // const WebSocketURL = 'ws://192.168.0.100:9999';
+// const WebSocketURL = 'ws://dzprime.com:9999';
+
 let privateKeyClient = '';
 let publicKeyClient = '';
 let publicKeyServer = '';

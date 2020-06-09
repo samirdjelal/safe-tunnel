@@ -49,7 +49,7 @@ class Chat extends Component {
 					</div>
 					
 					<div className="h-12 flex-1" onKeyPress={this.handleInputField}>
-						<input type="text" id="message-field" className="h-full w-full px-3 outline-none"/>
+						<input type="text" autoFocus={true} id="message-field" className="h-full w-full px-3 outline-none"/>
 					</div>
 					
 					{/*<div className="h-12 p-2 w-12 bg-gray-100 border-l text-center cursor-pointer text-gray-600 hover:text-gray-900" onClick={this.handleSendMessage}>*/}
