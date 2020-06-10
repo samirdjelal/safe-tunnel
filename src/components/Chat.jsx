@@ -25,7 +25,7 @@ class Chat extends Component {
 						
 						if (message.alert) {
 							return <Fragment key={index}>
-								{message.alert}
+								<div className="text-xs uppercase text-gray-500 text-center py-2 px-4">{message.alert}</div>
 							</Fragment>
 						}
 						
@@ -35,11 +35,6 @@ class Chat extends Component {
 							</Fragment>
 						}
 						
-						if (message.fileName) {
-							return <Fragment key={index}>
-								{message.fileName}
-							</Fragment>
-						}
 // uid
 // name
 // fileName

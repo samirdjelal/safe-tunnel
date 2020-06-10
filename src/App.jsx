@@ -13,11 +13,7 @@ class App extends React.Component {
 			page: 'connect', // chat
 			uid: '',
 			name: '',
-			messages: [
-				{
-					alert: 'user connected...'
-				}
-			],
+			messages: [],
 			privateKey: null,
 			publicKey: null,
 			publicKeyServer: null
@@ -51,13 +47,14 @@ class App extends React.Component {
 				page: 'chat',
 				uid: args.uid,
 				name: args.name,
-				publicKeyServer: args.publicKeyServer
+				publicKeyServer: args.publicKeyServer,
+				messages: [...prevState.messages, {alert: 'you are connected!'}]
 			}))
 		})
 		
 		ipcRenderer.on('ALERT', (event, args) => {
 			this.setState(prevState => ({
-				alert: args.alert
+				messages: [...prevState.messages, {alert: args.alert}]
 			}))
 		})
 		
