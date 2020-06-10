@@ -7,7 +7,7 @@ const wss = new WebSocket.Server({
 });
 console.log('ws://127.0.0.1:9999')
 
-const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {modulusLength: 2048});
+const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {modulusLength: 4096});
 const privateKeyServer = privateKey.export({format: "pem", type: "pkcs1"});
 const publicKeyServer = publicKey.export({format: "pem", type: "pkcs1"});
 

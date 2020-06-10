@@ -39,7 +39,7 @@ const decrypt = async (privateKey = '', key = '', cipher = '') => {
 
 
 const generate = () => {
-	const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {modulusLength: 2048});
+	const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {modulusLength: 4096});
 	return {
 		privateKey: privateKey.export({format: "pem", type: "pkcs1"}),
 		publicKey: publicKey.export({format: "pem", type: "pkcs1"})
