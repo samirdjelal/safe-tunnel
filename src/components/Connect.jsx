@@ -14,7 +14,7 @@ class Connect extends Component {
 						{/*<div className="mb-2">User ID</div>*/}
 						{/*<input type="text" id="create-uid" className="border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded mb-6"/>*/}
 						
-						<div className="mb-2">Full Name</div>
+						<div className="mb-2 text-sm">Full Name</div>
 						<input type="text" id="create-name" autoFocus={true} onKeyPress={this.handleInputField} className="border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded mb-6"/>
 						
 						<div onClick={this.props.handleWSConnect}
