@@ -96,7 +96,6 @@ wss.on('connection', function connection(ws) {
 							uid: msg.uid,
 							name: msg.name,
 							fileName: msg.fileName,
-							filePath: msg.filePath,
 							fileSize: msg.fileSize,
 							fileType: msg.fileType,
 							message: CMSG,

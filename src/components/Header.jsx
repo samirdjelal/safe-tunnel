@@ -4,7 +4,6 @@ class Header extends Component {
 	render() {
 		return (
 			<div className="Hero bg-gray-900 text-white pt-5 pb-16">
-				
 				<div className="mx-auto flex" style={{width: '90%'}}>
 					
 					<div className="h-8">

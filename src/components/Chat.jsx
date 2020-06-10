@@ -6,6 +6,7 @@ class Chat extends Component {
 		this.handleSendMessage = this.handleSendMessage.bind(this);
 		this.handleInputField = this.handleInputField.bind(this);
 		this.handleFileChange = this.handleFileChange.bind(this);
+		this.downloadFile = this.downloadFile.bind(this);
 	}
 	
 	render() {
@@ -29,19 +30,49 @@ class Chat extends Component {
 							</Fragment>
 						}
 						
+						// if (message.fileName) {
+						// 	return <Fragment key={index}>
+						// 		{message.fileName}
+						// 	</Fragment>
+						// }
+						
+						
+						// uid
+						// name
+						// fileName
+						// filePath
+						// fileSize
+						// fileType
+						// fileData
 						if (message.fileName) {
 							return <Fragment key={index}>
-								{message.fileName}
+								<div className="flex mb-3" style={{direction: (me === message.uid ? 'rtl' : 'ltr')}}>
+									<div className={`shadow-md h-10 w-10 rounded-full text-center leading-10 text-white text-xl ${me === message.uid ? 'bg-blue-400 ml-2' : 'bg-red-400 mr-2'}`}>
+										{message.name.charAt(0).toUpperCase()}
+									</div>
+									<div className="flex-1">
+										<div className={` px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
+										<div className="cursor-pointer p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words "
+										     style={{minWidth: 50, direction: 'ltr'}} onClick={() => this.downloadFile(message.fileData, message.fileName)}>
+											
+											<div className="flex">
+												<div className="w-6 h-6 mr-1">
+													<svg className="fill-current" fill="currentColor" viewBox="0 0 20 20">
+														<path fillRule="evenodd"
+														      d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+														      clipRule="evenodd"/>
+													</svg>
+												</div>
+												<div className="leading-6 font-bold">
+													{message.fileName}
+												</div>
+											</div>
+										</div>
+									
+									</div>
+								</div>
 							</Fragment>
 						}
-						
-// uid
-// name
-// fileName
-// filePath
-// fileSize
-// fileType
-// fileData
 						
 						return <Fragment key={index}>
 							<div className="flex mb-3" style={{direction: (me === message.uid ? 'rtl' : 'ltr')}}>
@@ -52,7 +83,8 @@ class Chat extends Component {
 								
 								<div className="flex-1">
 									<div className={`px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
-									<div className="p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words " style={{minWidth: 50, direction: 'ltr'}}>{message.body}</div>
+									<div className="p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words "
+									     style={{minWidth: 50, direction: 'ltr'}}>{message.body}</div>
 								</div>
 							
 							</div>
@@ -108,28 +140,18 @@ class Chat extends Component {
 		if (e.target.files.length <= 0) return;
 		const file = e.target.files[0];
 		this.props.handleSendFile(file)
-		// // console.log(window.URL.createObjectURL(file))
-		//
-		// const reader = new FileReader()
-		// reader.onload = (e) => {
-		// 	// console.log('file loaded ', e.target.result)
-		// 	const sendFile = {
-		// 		fileName: file.name,
-		// 		filePath: file.path,
-		// 		fileSize: file.size,
-		// 		fileType: file.type,
-		// 		fileData: e.target.result
-		// 	}
-		// 	this.props.handleSendFile(sendFile)
-		// 	// console.log(sendFile)
-		// };
-		// reader.onerror = (e) => {
-		// 	console.error(e)
-		// }
-		// reader.readAsDataURL(file);
-		//
 	}
 	
+	downloadFile(fileData, fileName='') {
+		const url = window.URL.createObjectURL(new Blob([fileData]));
+		const link = document.createElement('a');
+		link.href = url;
+		link.setAttribute('download', fileName);
+		document.body.appendChild(link);
+		link.click();
+		link.remove();
+		window.URL.revokeObjectURL(url);
+	}
 	
 }
 

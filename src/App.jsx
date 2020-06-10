@@ -10,7 +10,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			page: 'connect', // chat
+			page: 'chat', // chat, connect
 			uid: '',
 			name: '',
 			messages: [],
@@ -102,7 +102,6 @@ class App extends React.Component {
 				uid: this.state.uid,
 				name: this.state.name,
 				fileName: file.name,
-				filePath: file.path,
 				fileSize: file.size,
 				fileType: file.type,
 				fileData: e.target.result

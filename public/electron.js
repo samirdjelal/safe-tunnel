@@ -133,10 +133,8 @@ ipcMain.on('SEND_FILE', async (event, args) => {
 		uid: args.uid,
 		name: args.name,
 		fileName: args.fileName,
-		filePath: args.filePath,
 		fileSize: args.fileSize,
 		fileType: args.fileType,
-		// fileData: args.fileData,
 		message: message,
 		key: key
 	}));
@@ -167,7 +165,6 @@ ws.on('message', async function incoming(data) {
 			uid: msg.uid,
 			name: msg.name,
 			fileName: msg.fileName,
-			filePath: msg.filePath,
 			fileSize: msg.fileSize,
 			fileType: msg.fileType,
 			fileData: file
