@@ -5,7 +5,7 @@ class Chat extends Component {
 		super(props);
 		this.handleSendMessage = this.handleSendMessage.bind(this);
 		this.handleInputField = this.handleInputField.bind(this);
-		this.handleFileSharing = this.handleFileSharing.bind(this);
+		this.handleFileChange = this.handleFileChange.bind(this);
 	}
 	
 	render() {
@@ -21,8 +21,34 @@ class Chat extends Component {
 				
 				<div id="message-container" className="overflow-y-scroll p-4 border-t-4" style={{height: 438}}>
 					
-					{this.props.messages.map((message, index) => (
-						<Fragment key={index}>
+					{this.props.messages.map((message, index) => {
+						
+						if (message.alert) {
+							return <Fragment key={index}>
+								{message.alert}
+							</Fragment>
+						}
+						
+						if (message.fileName) {
+							return <Fragment key={index}>
+								{message.fileName}
+							</Fragment>
+						}
+						
+						if (message.fileName) {
+							return <Fragment key={index}>
+								{message.fileName}
+							</Fragment>
+						}
+// uid
+// name
+// fileName
+// filePath
+// fileSize
+// fileType
+// fileData
+						
+						return <Fragment key={index}>
 							<div className="flex mb-3" style={{direction: (me === message.uid ? 'rtl' : 'ltr')}}>
 								
 								<div className={`shadow-md h-10 w-10 rounded-full text-center leading-10 text-white text-xl ${me === message.uid ? 'bg-blue-400 ml-2' : 'bg-red-400 mr-2'}`}>
@@ -36,16 +62,16 @@ class Chat extends Component {
 							
 							</div>
 						</Fragment>
-					))}
+					})}
 				
 				</div>
 				
 				<div className="h-12 border-t flex">
 					
-					<input className="hidden" type="file" id="file-input"/>
+					<input className="hidden" onChange={this.handleFileChange} type="file" id="file-input"/>
 					
 					<div className="h-12 p-3 w-12 bg-gray-100 border-r text-center cursor-pointer text-gray-600 hover:text-gray-900"
-					     onClick={this.handleFileSharing}>
+					     onClick={() => document.getElementById('file-input').click()}>
 						<svg className="fill-current" fill="currentColor" viewBox="0 0 20 20">
 							<path fillRule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
 							      clipRule="evenodd"/>
@@ -83,9 +109,32 @@ class Chat extends Component {
 		document.getElementById('message-field').value = '';
 	}
 	
-	handleFileSharing() {
-		document.getElementById('file-input').click();
+	handleFileChange(e) {
+		if (e.target.files.length <= 0) return;
+		const file = e.target.files[0];
+		this.props.handleSendFile(file)
+		// // console.log(window.URL.createObjectURL(file))
+		//
+		// const reader = new FileReader()
+		// reader.onload = (e) => {
+		// 	// console.log('file loaded ', e.target.result)
+		// 	const sendFile = {
+		// 		fileName: file.name,
+		// 		filePath: file.path,
+		// 		fileSize: file.size,
+		// 		fileType: file.type,
+		// 		fileData: e.target.result
+		// 	}
+		// 	this.props.handleSendFile(sendFile)
+		// 	// console.log(sendFile)
+		// };
+		// reader.onerror = (e) => {
+		// 	console.error(e)
+		// }
+		// reader.readAsDataURL(file);
+		//
 	}
+	
 	
 }
 

@@ -6,9 +6,9 @@ const WebSocket = require('ws');
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-// const WebSocketURL = 'ws://127.0.0.1:9999';
+const WebSocketURL = 'ws://127.0.0.1:9999';
 // const WebSocketURL = 'ws://192.168.0.100:9999';
-const WebSocketURL = 'ws://dzprime.com:9999';
+// const WebSocketURL = 'ws://dzprime.com:9999';
 
 let privateKeyClient = '';
 let publicKeyClient = '';
@@ -50,7 +50,7 @@ function createWindow() {
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`).then(r => console.log(r));
 	mainWindow.on('closed', () => mainWindow = null);
 	mainWindow.webContents.openDevTools();
-
+	
 	if (isDev) {
 		mainWindow.webContents.openDevTools();
 		const {default: installExtension, REACT_DEVELOPER_TOOLS} = require('electron-devtools-installer');
@@ -118,8 +118,6 @@ ipcMain.on('CONNECT', async (event, args) => {
 
 ipcMain.on('SEND_MESSAGE', async (event, args) => {
 	const {message, key} = await encrypt(publicKeyServer, args.body);
-	
-	// const cipher = args.body;
 	ws.send(JSON.stringify({
 		uid: args.uid,
 		name: args.name,
@@ -127,6 +125,23 @@ ipcMain.on('SEND_MESSAGE', async (event, args) => {
 		key: key
 	}));
 })
+
+ipcMain.on('SEND_FILE', async (event, args) => {
+	const {message, key} = await encrypt(publicKeyServer, args.fileData);
+	ws.send(JSON.stringify({
+		action: 'file',
+		uid: args.uid,
+		name: args.name,
+		fileName: args.fileName,
+		filePath: args.filePath,
+		fileSize: args.fileSize,
+		fileType: args.fileType,
+		// fileData: args.fileData,
+		message: message,
+		key: key
+	}));
+})
+
 
 ws.on('message', async function incoming(data) {
 	let msg = JSON.parse(data)
@@ -137,6 +152,21 @@ ws.on('message', async function incoming(data) {
 			name: msg.name,
 			publicKeyServer: msg.publicKeyServer,
 			action: 'connected'
+		})
+	} else if (msg.action && msg.action === 'alert') {
+		mainWindow.webContents.send('ALERT', {
+			alert: msg.message
+		})
+	} else if (msg.action && msg.action === 'file') {
+		const file = await decrypt(privateKeyClient, msg.key, msg.message);
+		mainWindow.webContents.send('RECEIVE_FILE', {
+			uid: msg.uid,
+			name: msg.name,
+			fileName: msg.fileName,
+			filePath: msg.filePath,
+			fileSize: msg.fileSize,
+			fileType: msg.fileType,
+			fileData: file
 		})
 	} else {
 		const plaintext = await decrypt(privateKeyClient, msg.key, msg.message);

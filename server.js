@@ -18,6 +18,14 @@ wss.on('connection', function connection(ws) {
 		clients = clients.filter(client => {
 			if (client.ws === ws) {
 				console.log(client.name + ' Disconnected!');
+				for (const C of clients) {
+					if (C.ws.readyState === WebSocket.OPEN && C.ws !== ws) {
+						C.send(JSON.stringify({
+							action: 'alert',
+							message: `${client.name} left the chat`
+						}));
+					}
+				}
 			}
 			return client.ws !== ws;
 		})
@@ -42,6 +50,16 @@ wss.on('connection', function connection(ws) {
 					publicKeyServer: publicKeyServer,
 					action: 'connected'
 				}));
+				
+				for (const client of clients) {
+					if (client.ws.readyState === WebSocket.OPEN && client.ws !== ws) {
+						ws.send(JSON.stringify({
+							action: 'alert',
+							message: `${msg.name} joined the chat`
+						}));
+					}
+				}
+				
 			}
 		} else {
 			const decryptedData = await crypto.privateDecrypt(
@@ -61,7 +79,7 @@ wss.on('connection', function connection(ws) {
 			
 			for (const client of clients) {
 				if (client.ws.readyState === WebSocket.OPEN) {
-					const RANDOM_KEY =  new Date().getTime() +  client.publicKey + MSG;
+					const RANDOM_KEY = new Date().getTime() + client.publicKey + MSG;
 					const KEY = crypto.createHash('md5').update(RANDOM_KEY).digest('hex');
 					const IV = KEY.split('').reverse().join('').substr(16); // reverse the md5(key), and take last 16 char
 					
@@ -70,13 +88,27 @@ wss.on('connection', function connection(ws) {
 					CMSG += Cipher.final('base64');
 					
 					let CKEY = crypto.publicEncrypt({key: client.publicKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256",}, Buffer.from(KEY));
-					let newMsg = JSON.stringify({
-						uid: msg.uid,
-						name: msg.name,
-						message: CMSG,
-						key: CKEY
-					});
-					client.ws.send(newMsg);
+					
+					if (msg.action && msg.action === 'file') {
+						client.ws.send(JSON.stringify({
+							action: 'file',
+							uid: msg.uid,
+							name: msg.name,
+							fileName: msg.fileName,
+							filePath: msg.filePath,
+							fileSize: msg.fileSize,
+							fileType: msg.fileType,
+							message: CMSG,
+							key: CKEY
+						}));
+					} else {
+						client.ws.send(JSON.stringify({
+							uid: msg.uid,
+							name: msg.name,
+							message: CMSG,
+							key: CKEY
+						}));
+					}
 				}
 			}
 		}

@@ -13,12 +13,17 @@ class App extends React.Component {
 			page: 'connect', // chat
 			uid: '',
 			name: '',
-			messages: [],
+			messages: [
+				{
+					alert: 'user connected...'
+				}
+			],
 			privateKey: null,
 			publicKey: null,
 			publicKeyServer: null
 		}
 		this.handleSendMessage = this.handleSendMessage.bind(this);
+		this.handleSendFile = this.handleSendFile.bind(this);
 		this.handleWSConnect = this.handleWSConnect.bind(this);
 	}
 	
@@ -32,6 +37,14 @@ class App extends React.Component {
 				}))
 			}
 		})
+		ipcRenderer.on('RECEIVE_FILE', (event, args) => {
+			console.log(args)
+			if (args.fileName && args.fileName.length > 0) {
+				this.setState(prevState => ({
+					messages: [...prevState.messages, args]
+				}))
+			}
+		})
 		
 		ipcRenderer.on('CONNECTED', (event, args) => {
 			this.setState(prevState => ({
@@ -39,6 +52,12 @@ class App extends React.Component {
 				uid: args.uid,
 				name: args.name,
 				publicKeyServer: args.publicKeyServer
+			}))
+		})
+		
+		ipcRenderer.on('ALERT', (event, args) => {
+			this.setState(prevState => ({
+				alert: args.alert
 			}))
 		})
 		
@@ -63,7 +82,7 @@ class App extends React.Component {
 			<div className="App">
 				<Header {...this.state}/>
 				{this.state.page === 'connect' && <Connect handleWSConnect={this.handleWSConnect}/>}
-				{this.state.page === 'chat' && <Chat {...this.state} handleSendMessage={this.handleSendMessage}/>}
+				{this.state.page === 'chat' && <Chat {...this.state} handleSendMessage={this.handleSendMessage} handleSendFile={this.handleSendFile}/>}
 			</div>
 		);
 	}
@@ -75,13 +94,29 @@ class App extends React.Component {
 			name: this.state.name,
 			body: messageField,
 		});
-		// this.setState(prevState => ({
-		// 	messages: [...prevState.messages, {
-		// 		uid: this.state.uid,
-		// 		name: this.state.name,
-		// 		body: messageField
-		// 	}]
-		// }));
+	}
+	
+	handleSendFile(file) {
+		// console.log(window.URL.createObjectURL(file))
+		const reader = new FileReader()
+		reader.onload = (e) => {
+			// console.log('file loaded ', e.target.result)
+			ipcRenderer.send('SEND_FILE', {
+				uid: this.state.uid,
+				name: this.state.name,
+				fileName: file.name,
+				filePath: file.path,
+				fileSize: file.size,
+				fileType: file.type,
+				fileData: e.target.result
+			});
+		};
+		reader.onerror = (e) => {
+			console.error(e)
+		}
+		reader.readAsDataURL(file);
+		
+		
 	}
 	
 	handleWSConnect() {
