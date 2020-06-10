@@ -20,7 +20,7 @@ wss.on('connection', function connection(ws) {
 				console.log(client.name + ' Disconnected!');
 				for (const C of clients) {
 					if (C.ws.readyState === WebSocket.OPEN && C.ws !== ws) {
-						C.send(JSON.stringify({
+						C.ws.send(JSON.stringify({
 							action: 'alert',
 							message: `${client.name} left the chat`
 						}));
