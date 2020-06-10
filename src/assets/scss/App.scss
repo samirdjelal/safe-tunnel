@@ -1,9 +1,32 @@
+@keyframes showSetting {
+	0% {
+		top: 700px;
+	}
+	100% {
+		top: 68px;
+
+	}
+}
+@keyframes hideSetting {
+	0% {
+		top: 68px;
+	}
+	100% {
+		top: 700px;
+	}
+}
+
 body {
 	margin: 0;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	background-image: url('../img/texture.png');
+	overflow: hidden;
+}
+
+#root {
+	overflow: hidden;
 }
 
 ::-webkit-scrollbar-track {
@@ -32,4 +55,31 @@ body {
 
 .Hero {
 	background-image: url('../img/texture.png');
+}
+
+.Setting {
+	width: 90%;
+	left: 5%;
+	top: 700px;
+	height: 700px;
+
+	&.Show {
+		top: 68px;
+		animation-iteration-count: 1;
+		animation-name: showSetting;
+		animation-duration: 0.3s;
+		animation-timing-function: ease-in-out;
+	}
+
+	&.Hide {
+		top: 700px;
+		animation-iteration-count: 1;
+		animation-name: hideSetting;
+		animation-duration: 0.3s;
+		animation-timing-function: ease-in-out;
+	}
+
+
+
+
 }

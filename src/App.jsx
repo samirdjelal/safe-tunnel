@@ -2,6 +2,7 @@ import React from 'react';
 import Header from "./components/Header";
 import Chat from "./components/Chat";
 import Connect from "./components/Connect";
+import Setting from "./components/Setting";
 
 const ipcRenderer = window.require('electron').ipcRenderer;
 const crypto = require('crypto');
@@ -10,7 +11,8 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			page: 'chat', // chat, connect
+			showSetting: false,
+			page: 'connect', // chat, connect
 			uid: '',
 			name: '',
 			messages: [],
@@ -21,6 +23,7 @@ class App extends React.Component {
 		this.handleSendMessage = this.handleSendMessage.bind(this);
 		this.handleSendFile = this.handleSendFile.bind(this);
 		this.handleWSConnect = this.handleWSConnect.bind(this);
+		this.toggleSetting = this.toggleSetting.bind(this);
 	}
 	
 	componentDidMount() {
@@ -76,14 +79,19 @@ class App extends React.Component {
 	
 	render() {
 		return (
-			<div className="App">
-				<Header {...this.state}/>
+			<div className="App relative overflow-hidden">
+				<Header {...this.state} toggleSetting={this.toggleSetting}/>
 				{this.state.page === 'connect' && <Connect handleWSConnect={this.handleWSConnect}/>}
 				{this.state.page === 'chat' && <Chat {...this.state} handleSendMessage={this.handleSendMessage} handleSendFile={this.handleSendFile}/>}
+				<Setting show={this.state.showSetting}/>
 			</div>
 		);
 	}
 	
+	toggleSetting() {
+		// console.log('toggleSetting')
+		this.setState(prevState => ({showSetting: !prevState.showSetting}))
+	}
 	
 	handleSendMessage(messageField) {
 		ipcRenderer.send('SEND_MESSAGE', {

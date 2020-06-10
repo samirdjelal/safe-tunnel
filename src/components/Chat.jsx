@@ -18,9 +18,9 @@ class Chat extends Component {
 		
 		const me = this.props.uid;
 		return (
-			<div className="mx-auto -mt-12 bg-white rounded-lg shadow-md overflow-hidden" style={{width: '90%'}}>
+			<div className="mx-auto -mt-12 mb-5 bg-white rounded-lg shadow-md overflow-hidden" style={{width: '90%'}}>
 				
-				<div id="message-container" className="overflow-y-scroll p-4 border-t-4" style={{height: 438}}>
+				<div id="message-container" className="overflow-y-scroll p-4 pt-2 border-t-4" style={{height: 438}}>
 					
 					{this.props.messages.map((message, index) => {
 						
@@ -36,7 +36,6 @@ class Chat extends Component {
 						// 	</Fragment>
 						// }
 						
-						
 						// uid
 						// name
 						// fileName
@@ -45,6 +44,15 @@ class Chat extends Component {
 						// fileType
 						// fileData
 						if (message.fileName) {
+							let size = message.fileSize, sizeExt = ['Bytes', 'KB', 'MB', 'GB'];
+							let i = 0;
+							while (size > 900) {
+								size /= 1024;
+								i++;
+							}
+							size = (Math.round(size * 100) / 100) + ' ' + sizeExt[i];
+							
+							
 							return <Fragment key={index}>
 								<div className="flex mb-3" style={{direction: (me === message.uid ? 'rtl' : 'ltr')}}>
 									<div className={`shadow-md h-10 w-10 rounded-full text-center leading-10 text-white text-xl ${me === message.uid ? 'bg-blue-400 ml-2' : 'bg-red-400 mr-2'}`}>
@@ -63,13 +71,12 @@ class Chat extends Component {
 														      clipRule="evenodd"/>
 													</svg>
 												</div>
-												<div className="leading-6 font-bold">
-													{message.fileName}
-												</div>
+												<div className="leading-6 font-bold">{message.fileName}</div>
 											</div>
 										</div>
-									
+										<div className="text-xs -mt-1 text-right text-gray-600" style={{direction: 'ltr'}}>{size}</div>
 									</div>
+								
 								</div>
 							</Fragment>
 						}
@@ -142,7 +149,7 @@ class Chat extends Component {
 		this.props.handleSendFile(file)
 	}
 	
-	downloadFile(fileData, fileName='') {
+	downloadFile(fileData, fileName = '') {
 		const url = window.URL.createObjectURL(new Blob([fileData]));
 		const link = document.createElement('a');
 		link.href = url;

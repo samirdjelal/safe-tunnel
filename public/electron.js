@@ -6,9 +6,9 @@ const WebSocket = require('ws');
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-// const WebSocketURL = 'ws://127.0.0.1:9999';
+const WebSocketURL = 'ws://127.0.0.1:9999';
 // const WebSocketURL = 'ws://192.168.0.100:9999';
-const WebSocketURL = 'ws://dzprime.com:9999';
+// const WebSocketURL = 'ws://dzprime.com:9999';
 
 let privateKeyClient = '';
 let publicKeyClient = '';
@@ -115,7 +115,6 @@ ipcMain.on('CONNECT', async (event, args) => {
 	
 })
 
-
 ipcMain.on('SEND_MESSAGE', async (event, args) => {
 	const {message, key} = await encrypt(publicKeyServer, args.body);
 	ws.send(JSON.stringify({
@@ -138,8 +137,10 @@ ipcMain.on('SEND_FILE', async (event, args) => {
 		message: message,
 		key: key
 	}));
+	mainWindow.webContents.send('ALERT', {
+		alert: 'file sent'
+	})
 })
-
 
 ws.on('message', async function incoming(data) {
 	let msg = JSON.parse(data)
@@ -154,7 +155,7 @@ ws.on('message', async function incoming(data) {
 		})
 		
 	} else if (msg.alertMessage) {
-		console.log('alert ========> ',msg.alertMessage)
+		console.log('alert ========> ', msg.alertMessage)
 		mainWindow.webContents.send('ALERT', {
 			alert: msg.alertMessage
 		})
@@ -179,3 +180,4 @@ ws.on('message', async function incoming(data) {
 	}
 	
 });
+
