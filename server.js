@@ -28,7 +28,7 @@ wss.on('connection', function connection(ws) {
 			if (client.ws.readyState === WebSocket.OPEN) {
 				console.log(`${disconnected_client.name} left the chat`)
 				client.ws.send(JSON.stringify({
-					alert: `${disconnected_client.name} left the chat`
+					alertMessage: `${disconnected_client.name} left the chat`
 				}));
 			}
 		}
@@ -56,7 +56,7 @@ wss.on('connection', function connection(ws) {
 					if (client.ws.readyState === WebSocket.OPEN) {
 						console.log(`${msg.name} joined the chat`)
 						client.ws.send(JSON.stringify({
-							alert: `${msg.name} joined the chat`
+							alertMessage: `${msg.name} joined the chat`
 						}));
 					}
 				}

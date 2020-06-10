@@ -155,10 +155,10 @@ ws.on('message', async function incoming(data) {
 			action: 'connected'
 		})
 		
-	} else if (msg.alert === 'alert') {
-		console.log('alert ========> ',msg.alert)
+	} else if (msg.alertMessage) {
+		console.log('alert ========> ',msg.alertMessage)
 		mainWindow.webContents.send('ALERT', {
-			alert: msg.alert
+			alert: msg.alertMessage
 		})
 		
 	} else if (msg.action && msg.action === 'file') {
