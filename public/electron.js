@@ -6,9 +6,9 @@ const WebSocket = require('ws');
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-const WebSocketURL = 'ws://127.0.0.1:9999';
+// const WebSocketURL = 'ws://127.0.0.1:9999';
 // const WebSocketURL = 'ws://192.168.0.100:9999';
-// const WebSocketURL = 'ws://dzprime.com:9999';
+const WebSocketURL = 'ws://dzprime.com:9999';
 
 let privateKeyClient = '';
 let publicKeyClient = '';
@@ -94,11 +94,8 @@ app.on('activate', () => {
 
 let ws = new WebSocket(WebSocketURL, {
 	perMessageDeflate: false
-});
-// ws.on('open', function open() {
-//
-// });
-
+})
+// ws.on('open', function open() {});
 
 ipcMain.on('CONNECT', async (event, args) => {
 	const {privateKey, publicKey} = await generate();
@@ -120,7 +117,7 @@ ipcMain.on('CONNECT', async (event, args) => {
 
 
 ipcMain.on('SEND_MESSAGE', async (event, args) => {
-	const {message, key} = await encrypt(publicKeyServer, '123456', args.body);
+	const {message, key} = await encrypt(publicKeyServer, args.body);
 	
 	// const cipher = args.body;
 	ws.send(JSON.stringify({

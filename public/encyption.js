@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 
-const encrypt = async (publicKey = '', key = '', plaintext = '') => {
-	
-	const KEY = crypto.createHash('md5').update(key).digest('hex');
+const encrypt = async (publicKey = '', plaintext = '') => {
+	const RANDOM_KEY =  new Date().getTime() +  publicKey + plaintext;
+	const KEY = crypto.createHash('md5').update(RANDOM_KEY).digest('hex');
 	const IV = KEY.split('').reverse().join('').substr(16); // reverse the md5(key), and take last 16 char
 	
 	let Cipher = crypto.createCipheriv('aes-256-cbc', KEY, IV);

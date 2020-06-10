@@ -5,6 +5,7 @@ class Chat extends Component {
 		super(props);
 		this.handleSendMessage = this.handleSendMessage.bind(this);
 		this.handleInputField = this.handleInputField.bind(this);
+		this.handleFileSharing = this.handleFileSharing.bind(this);
 	}
 	
 	render() {
@@ -41,7 +42,10 @@ class Chat extends Component {
 				
 				<div className="h-12 border-t flex">
 					
-					<div className="h-12 p-3 w-12 bg-gray-100 border-r text-center cursor-pointer text-gray-600 hover:text-gray-900">
+					<input className="hidden" type="file" id="file-input"/>
+					
+					<div className="h-12 p-3 w-12 bg-gray-100 border-r text-center cursor-pointer text-gray-600 hover:text-gray-900"
+					     onClick={this.handleFileSharing}>
 						<svg className="fill-current" fill="currentColor" viewBox="0 0 20 20">
 							<path fillRule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
 							      clipRule="evenodd"/>
@@ -77,6 +81,10 @@ class Chat extends Component {
 		if (messageField.length <= 0) return;
 		this.props.handleSendMessage(messageField)
 		document.getElementById('message-field').value = '';
+	}
+	
+	handleFileSharing() {
+		document.getElementById('file-input').click();
 	}
 	
 }
