@@ -52,7 +52,7 @@ class Chat extends Component {
 								
 								<div className="flex-1">
 									<div className={`px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
-									<div className="p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-all " style={{minWidth: 50, direction: 'ltr'}}>{message.body}</div>
+									<div className="p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words " style={{minWidth: 50, direction: 'ltr'}}>{message.body}</div>
 								</div>
 							
 							</div>
