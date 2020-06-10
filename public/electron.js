@@ -145,6 +145,7 @@ ipcMain.on('SEND_FILE', async (event, args) => {
 
 ws.on('message', async function incoming(data) {
 	let msg = JSON.parse(data)
+	
 	if (msg.action && msg.action === 'connected') {
 		publicKeyServer = msg.publicKeyServer;
 		mainWindow.webContents.send('CONNECTED', {
@@ -153,10 +154,13 @@ ws.on('message', async function incoming(data) {
 			publicKeyServer: msg.publicKeyServer,
 			action: 'connected'
 		})
-	} else if (msg.action && msg.action === 'alert') {
+		
+	} else if (msg.alert === 'alert') {
+		console.log('alert ========> ',msg.alert)
 		mainWindow.webContents.send('ALERT', {
-			alert: msg.message
+			alert: msg.alert
 		})
+		
 	} else if (msg.action && msg.action === 'file') {
 		const file = await decrypt(privateKeyClient, msg.key, msg.message);
 		mainWindow.webContents.send('RECEIVE_FILE', {

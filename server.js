@@ -15,20 +15,24 @@ let clients = [];
 wss.on('connection', function connection(ws) {
 	
 	ws.on('close', function () {
+		let disconnected_client = {};
 		clients = clients.filter(client => {
 			if (client.ws === ws) {
+				disconnected_client = client;
 				console.log(client.name + ' Disconnected!');
-				for (const C of clients) {
-					if (C.ws.readyState === WebSocket.OPEN && C.ws !== ws) {
-						C.ws.send(JSON.stringify({
-							action: 'alert',
-							message: `${client.name} left the chat`
-						}));
-					}
-				}
 			}
 			return client.ws !== ws;
 		})
+		
+		for (const client of clients) {
+			if (client.ws.readyState === WebSocket.OPEN) {
+				console.log(`${disconnected_client.name} left the chat`)
+				client.ws.send(JSON.stringify({
+					alert: `${disconnected_client.name} left the chat`
+				}));
+			}
+		}
+		
 	})
 	
 	ws.on('message', async function incoming(data) {
@@ -38,12 +42,8 @@ wss.on('connection', function connection(ws) {
 			const client = clients.filter(client => (client.uid === msg.uid))
 			if (client.length === 0) {
 				console.log(msg.name + ' Connected!');
-				clients.push({
-					uid: msg.uid,
-					name: msg.name,
-					publicKey: msg.publicKey,
-					ws: ws,
-				});
+				clients.push({uid: msg.uid, name: msg.name, publicKey: msg.publicKey, ws: ws});
+				
 				ws.send(JSON.stringify({
 					uid: msg.uid,
 					name: msg.name,
@@ -51,11 +51,12 @@ wss.on('connection', function connection(ws) {
 					action: 'connected'
 				}));
 				
-				for (const client of clients) {
-					if (client.ws.readyState === WebSocket.OPEN && client.ws !== ws) {
-						ws.send(JSON.stringify({
-							action: 'alert',
-							message: `${msg.name} joined the chat`
+				const other_clients = clients.filter(client => (client.uid !== msg.uid))
+				for (const client of other_clients) {
+					if (client.ws.readyState === WebSocket.OPEN) {
+						console.log(`${msg.name} joined the chat`)
+						client.ws.send(JSON.stringify({
+							alert: `${msg.name} joined the chat`
 						}));
 					}
 				}
