@@ -173,7 +173,7 @@ ws.on('message', async function incoming(data) {
 		console.log(msg.signature)
 
 		const signature = SIGNATURE
-			? 'SHA256 SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.signature)).digest('hex')
+			? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.message)).digest('hex')
 			: 'INVALID SIGNATURE!';
 		
 		mainWindow.webContents.send('RECEIVE_FILE', {
@@ -188,7 +188,7 @@ ws.on('message', async function incoming(data) {
 	} else {
 		const {MSG, SIGNATURE} = await decrypt(privateKeyClient, publicKeyServer, msg.key, msg.message, msg.signature);
 		const signature = SIGNATURE
-			? 'SHA256 SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.signature)).digest('hex')
+			? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.message)).digest('hex')
 			: 'INVALID SIGNATURE!';
 		
 		console.log(signature)
