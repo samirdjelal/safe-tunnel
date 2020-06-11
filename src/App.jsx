@@ -83,7 +83,7 @@ class App extends React.Component {
 				<Header {...this.state} toggleSetting={this.toggleSetting}/>
 				{this.state.page === 'connect' && <Connect handleWSConnect={this.handleWSConnect}/>}
 				{this.state.page === 'chat' && <Chat {...this.state} handleSendMessage={this.handleSendMessage} handleSendFile={this.handleSendFile}/>}
-				<Setting show={this.state.showSetting}/>
+				<Setting {...this.state} show={this.state.showSetting}/>
 			</div>
 		);
 	}
