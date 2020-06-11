@@ -52,7 +52,7 @@ class Chat extends Component {
 										<div className={` px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
 										
 										<div className="cursor-pointer p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words "
-										     style={{minWidth: 50, direction: 'ltr'}} title={message.signature}
+										     style={{direction: 'ltr'}} title={message.signature}
 										     onClick={() => this.downloadFile(message.fileData, message.fileName)}>
 											
 											<div className="flex">
@@ -63,7 +63,7 @@ class Chat extends Component {
 														      clipRule="evenodd"/>
 													</svg>
 												</div>
-												<div className="leading-6 font-bold">{message.fileName}</div>
+												<div className="leading-6 flex-1 text-sm font-bold">{message.fileName}</div>
 											</div>
 										</div>
 										<div className={`text-xs -mt-1 text-gray-600 ${me === message.uid ? 'text-right' : 'text-left'}`} style={{direction: 'ltr'}}>{size}</div>
@@ -85,7 +85,7 @@ class Chat extends Component {
 									<div className={`px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
 									
 									<div className="p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words "
-									     style={{minWidth: 50, direction: 'ltr'}} title={message.signature}>{message.body}</div>
+									     style={{direction: 'ltr'}} title={message.signature}>{message.body}</div>
 								</div>
 							
 							</div>
