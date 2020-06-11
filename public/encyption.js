@@ -1,7 +1,15 @@
 const crypto = require('crypto');
 
-const encrypt = async (publicKey = '', plaintext = '') => {
-	const RANDOM_KEY =  new Date().getTime() +  publicKey + plaintext;
+
+/**
+ * Encrypt a message using AES, and the key using RSA, and make a signature
+ * @param publicKeyServer
+ * @param privateKeyClient
+ * @param plaintext
+ * @returns {Promise<{signature: string, message: string, key: Buffer}>}
+ */
+const encrypt = async (publicKeyServer = '', privateKeyClient = '', plaintext = '') => {
+	const RANDOM_KEY = new Date().getTime() + publicKeyServer + plaintext;
 	const KEY = crypto.createHash('md5').update(RANDOM_KEY).digest('hex');
 	const IV = KEY.split('').reverse().join('').substr(16); // reverse the md5(key), and take last 16 char
 	
@@ -9,19 +17,25 @@ const encrypt = async (publicKey = '', plaintext = '') => {
 	let CMSG = Cipher.update(plaintext, 'utf8', 'base64');
 	CMSG += Cipher.final('base64');
 	
-	let CKEY = crypto.publicEncrypt({key: publicKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256",}, Buffer.from(KEY));
-
+	let CKEY = crypto.publicEncrypt({key: publicKeyServer, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256",}, Buffer.from(KEY));
+	
+	let SIGNATURE = crypto.sign("sha256", Buffer.from(plaintext), {
+		key: privateKeyClient,
+		padding: crypto.constants.RSA_PKCS1_PSS_PADDING
+	})
+	// .toString("base64")
 	return {
 		message: CMSG,
-		key: CKEY
+		key: CKEY,
+		signature: SIGNATURE
 	}
 	
 }
 
-const decrypt = async (privateKey = '', key = '', cipher = '') => {
+const decrypt = async (privateKeyClient = '', publicKeyServer, key = '', cipher = '', signature = '') => {
 	const decryptedData = crypto.privateDecrypt(
 		{
-			key: privateKey,
+			key: privateKeyClient,
 			padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
 			oaepHash: "sha256",
 		},
@@ -33,7 +47,36 @@ const decrypt = async (privateKey = '', key = '', cipher = '') => {
 	let Decipher = crypto.createDecipheriv('aes-256-cbc', KEY, IV);
 	let MSG = Decipher.update(cipher, 'base64', 'utf8');
 	MSG += Decipher.final('utf8');
-	return MSG;
+	
+	// console.log(signature)
+	// const VERIFIED_SIGNATURE = crypto.verify(
+	// 	"sha256", Buffer.from(MSG), {
+	// 		padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+	// 		key: publicKeyServer
+	// 	},
+	// 	Buffer.from(signature)
+	// )
+	// console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE)
+	//
+	// const client = await clients.filter(client => (client.uid === msg.uid))
+	//
+	// console.log('MSG',MSG)
+	// console.log('publicKeyServer',publicKeyServer)
+	// console.log('signature',signature)
+	//
+	
+	const VERIFIED_SIGNATURE = crypto.verify(
+		"sha256", Buffer.from(MSG), {
+			padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+			key: publicKeyServer
+		},
+		Buffer.from(signature)
+	)
+	console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE)
+	return {
+		MSG,
+		SIGNATURE: VERIFIED_SIGNATURE
+	};
 	
 }
 

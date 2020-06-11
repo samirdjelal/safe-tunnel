@@ -60,7 +60,6 @@ wss.on('connection', function connection(ws) {
 						}));
 					}
 				}
-				
 			}
 		} else {
 			const decryptedData = await crypto.privateDecrypt(
@@ -78,6 +77,17 @@ wss.on('connection', function connection(ws) {
 			let MSG = Decipher.update(msg.message, 'base64', 'utf8');
 			MSG += Decipher.final('utf8');
 			
+			const client = await clients.filter(client => (client.uid === msg.uid))
+			const VERIFIED_SIGNATURE = crypto.verify(
+				"sha256", Buffer.from(MSG), {
+					padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+					key: client[0].publicKey
+				},
+				Buffer.from(msg.signature)
+			)
+			console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE)
+
+			
 			for (const client of clients) {
 				if (client.ws.readyState === WebSocket.OPEN) {
 					const RANDOM_KEY = new Date().getTime() + client.publicKey + MSG;
@@ -90,6 +100,12 @@ wss.on('connection', function connection(ws) {
 					
 					let CKEY = crypto.publicEncrypt({key: client.publicKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256",}, Buffer.from(KEY));
 					
+					
+					let SIGNATURE = crypto.sign("sha256", Buffer.from(MSG), {
+						key: privateKeyServer,
+						padding: crypto.constants.RSA_PKCS1_PSS_PADDING
+					})
+					
 					if (msg.action && msg.action === 'file') {
 						client.ws.send(JSON.stringify({
 							action: 'file',
@@ -99,14 +115,16 @@ wss.on('connection', function connection(ws) {
 							fileSize: msg.fileSize,
 							fileType: msg.fileType,
 							message: CMSG,
-							key: CKEY
+							key: CKEY,
+							signature: SIGNATURE
 						}));
 					} else {
 						client.ws.send(JSON.stringify({
 							uid: msg.uid,
 							name: msg.name,
 							message: CMSG,
-							key: CKEY
+							key: CKEY,
+							signature: SIGNATURE
 						}));
 					}
 				}

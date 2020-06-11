@@ -30,19 +30,8 @@ class Chat extends Component {
 							</Fragment>
 						}
 						
-						// if (message.fileName) {
-						// 	return <Fragment key={index}>
-						// 		{message.fileName}
-						// 	</Fragment>
-						// }
-						
-						// uid
-						// name
-						// fileName
-						// filePath
-						// fileSize
-						// fileType
-						// fileData
+						// const SIGNATURE = message.signature.data.toString()
+	
 						if (message.fileName) {
 							let size = message.fileSize, sizeExt = ['Bytes', 'KB', 'MB', 'GB'];
 							let i = 0;
@@ -59,9 +48,12 @@ class Chat extends Component {
 										{message.name.charAt(0).toUpperCase()}
 									</div>
 									<div className="flex-1">
+										
 										<div className={` px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
+										
 										<div className="cursor-pointer p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words "
-										     style={{minWidth: 50, direction: 'ltr'}} onClick={() => this.downloadFile(message.fileData, message.fileName)}>
+										     style={{minWidth: 50, direction: 'ltr'}} title={message.signature}
+										     onClick={() => this.downloadFile(message.fileData, message.fileName)}>
 											
 											<div className="flex">
 												<div className="w-6 h-6 mr-1">
@@ -89,9 +81,11 @@ class Chat extends Component {
 								</div>
 								
 								<div className="flex-1">
+									
 									<div className={`px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
+									
 									<div className="p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words "
-									     style={{minWidth: 50, direction: 'ltr'}}>{message.body}</div>
+									     style={{minWidth: 50, direction: 'ltr'}} title={message.signature}>{message.body}</div>
 								</div>
 							
 							</div>

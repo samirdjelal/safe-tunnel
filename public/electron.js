@@ -2,6 +2,8 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const {encrypt, decrypt, generate} = require('./encyption');
 const WebSocket = require('ws');
+const crypto = require('crypto');
+
 // const axios = require("axios");
 const path = require('path');
 const isDev = require('electron-is-dev');
@@ -51,19 +53,19 @@ function createWindow() {
 	mainWindow.on('closed', () => mainWindow = null);
 	mainWindow.webContents.openDevTools();
 	
-	if (isDev) {
-		mainWindow.webContents.openDevTools();
-		const {default: installExtension, REACT_DEVELOPER_TOOLS} = require('electron-devtools-installer');
-		try {
-			installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
-				console.log(`Added Extension:  ${name}`);
-			}).catch((err) => {
-				console.log('An error occurred: ', err)
-			});
-		} catch (e) {
-		}
-	} else {
-	}
+	// if (isDev) {
+	// 	mainWindow.webContents.openDevTools();
+	// 	const {default: installExtension, REACT_DEVELOPER_TOOLS} = require('electron-devtools-installer');
+	// 	try {
+	// 		installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
+	// 			console.log(`Added Extension:  ${name}`);
+	// 		}).catch((err) => {
+	// 			console.log('An error occurred: ', err)
+	// 		});
+	// 	} catch (e) {
+	// 	}
+	// } else {
+	// }
 	
 }
 
@@ -116,17 +118,20 @@ ipcMain.on('CONNECT', async (event, args) => {
 })
 
 ipcMain.on('SEND_MESSAGE', async (event, args) => {
-	const {message, key} = await encrypt(publicKeyServer, args.body);
+	const {message, key, signature} = await encrypt(publicKeyServer, privateKeyClient, args.body);
+	// console.log(signature)
 	ws.send(JSON.stringify({
 		uid: args.uid,
 		name: args.name,
 		message: message,
-		key: key
+		key: key,
+		signature: signature
 	}));
 })
 
 ipcMain.on('SEND_FILE', async (event, args) => {
-	const {message, key} = await encrypt(publicKeyServer, args.fileData);
+	const {message, key, signature} = await encrypt(publicKeyServer, privateKeyClient, args.fileData);
+	
 	ws.send(JSON.stringify({
 		action: 'file',
 		uid: args.uid,
@@ -135,8 +140,10 @@ ipcMain.on('SEND_FILE', async (event, args) => {
 		fileSize: args.fileSize,
 		fileType: args.fileType,
 		message: message,
-		key: key
+		key: key,
+		signature: signature
 	}));
+	
 	mainWindow.webContents.send('ALERT', {
 		alert: 'file sent'
 	})
@@ -161,21 +168,35 @@ ws.on('message', async function incoming(data) {
 		})
 		
 	} else if (msg.action && msg.action === 'file') {
-		const file = await decrypt(privateKeyClient, msg.key, msg.message);
+		const {MSG, SIGNATURE} = await decrypt(privateKeyClient, publicKeyServer, msg.key, msg.message, msg.signature);
+		
+		console.log(msg.signature)
+
+		const signature = SIGNATURE
+			? 'SHA256 SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.signature)).digest('hex')
+			: 'INVALID SIGNATURE!';
+		
 		mainWindow.webContents.send('RECEIVE_FILE', {
 			uid: msg.uid,
 			name: msg.name,
 			fileName: msg.fileName,
 			fileSize: msg.fileSize,
 			fileType: msg.fileType,
-			fileData: file
+			fileData: MSG,
+			signature: signature
 		})
 	} else {
-		const plaintext = await decrypt(privateKeyClient, msg.key, msg.message);
+		const {MSG, SIGNATURE} = await decrypt(privateKeyClient, publicKeyServer, msg.key, msg.message, msg.signature);
+		const signature = SIGNATURE
+			? 'SHA256 SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.signature)).digest('hex')
+			: 'INVALID SIGNATURE!';
+		
+		console.log(signature)
 		mainWindow.webContents.send('RECEIVE_MESSAGE', {
 			uid: msg.uid,
 			name: msg.name,
-			body: plaintext
+			body: MSG,
+			signature: signature
 		})
 	}
 	
