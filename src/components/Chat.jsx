@@ -31,7 +31,7 @@ class Chat extends Component {
 						}
 						
 						// const SIGNATURE = message.signature.data.toString()
-	
+						
 						if (message.fileName) {
 							let size = message.fileSize, sizeExt = ['Bytes', 'KB', 'MB', 'GB'];
 							let i = 0;
@@ -66,7 +66,7 @@ class Chat extends Component {
 												<div className="leading-6 font-bold">{message.fileName}</div>
 											</div>
 										</div>
-										<div className="text-xs -mt-1 text-right text-gray-600" style={{direction: 'ltr'}}>{size}</div>
+										<div className={`text-xs -mt-1 text-gray-600 ${me === message.uid ? 'text-right' : 'text-left'}`} style={{direction: 'ltr'}}>{size}</div>
 									</div>
 								
 								</div>
@@ -144,14 +144,13 @@ class Chat extends Component {
 	}
 	
 	downloadFile(fileData, fileName = '') {
-		const url = window.URL.createObjectURL(new Blob([fileData]));
 		const link = document.createElement('a');
-		link.href = url;
+		link.href = fileData;
 		link.setAttribute('download', fileName);
 		document.body.appendChild(link);
 		link.click();
 		link.remove();
-		window.URL.revokeObjectURL(url);
+		window.URL.revokeObjectURL(fileData);
 	}
 	
 }
