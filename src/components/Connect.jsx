@@ -9,22 +9,33 @@ class Connect extends Component {
 	render() {
 		return (
 			<div className="mx-auto -mt-12 bg-white rounded-lg shadow-md overflow-hidden" style={{width: '90%'}}>
-				<div id="message-container" className="border-t-4" style={{height: 438, borderColor:'#f6ad55'}}>
+				<div id="message-container" className="border-t-4" style={{height: 486, borderColor:'#f6ad55'}}>
 					
 					<div className="text-xs text-center border-b text-white font-bold w-full" style={{backgroundColor:'#fbd38d', borderColor:'#f6ad55',fontSize: 12, padding: '5px 0', textShadow: '#ab4400 1px 1px 3px'}}>
 						END-TO-END ENCRYPTION ENABLED
 					</div>
 					
-					<div className="py-4 px-6 w-full">
+					<div className="py-4 px-8 w-full">
 						{/*<div className="mb-2">User ID</div>*/}
 						{/*<input type="text" id="create-uid" className="border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded mb-6"/>*/}
 						
 						<div className="mb-2 text-sm">Full Name</div>
 						<input type="text" id="create-name" autoFocus={true} onKeyPress={this.handleInputField} className="border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded mb-6"/>
 						
+						{/*<div onClick={this.props.handleWSConnect}*/}
+						{/*     className="shadow bg-red-400 border-red-500 text-white rounded text-center py-3 cursor-pointer hover:bg-red-500 hover:border-red-600 border-b-4 " style={{textShadow: '#861616 1px 1px 4px'}}>Connect*/}
+						{/*</div>*/}
+						
 						<div onClick={this.props.handleWSConnect}
-						     className="shadow bg-red-400 border-red-500 text-white rounded text-center py-3 cursor-pointer hover:bg-red-500 hover:border-red-600 border-b-4 " style={{textShadow: '#861616 1px 1px 4px'}}>Connect
+						     className="shadow bg-gray-400 border-gray-500 text-white rounded text-center py-3 cursor-pointer hover:bg-gray-500 hover:border-gray-600 border-b-4 " style={{}}>Connect
 						</div>
+						
+						{/*<div onClick={this.props.handleWSConnect}*/}
+						{/*     className="shadow text-white rounded text-center py-3 cursor-pointer hover:bg-red-500 hover:border-red-600 border-b-4 " style={{textShadow: '#861616 1px 1px 4px',backgroundColor:'#fbd38d', borderColor:'#f6ad55'}}>Connect*/}
+						{/*</div>*/}
+						
+						
+						
 					</div>
 				
 				

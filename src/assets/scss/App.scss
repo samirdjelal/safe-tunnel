@@ -1,31 +1,12 @@
-//@keyframes showSetting {
-//	0% {
-//		top: 700px;
-//	}
-//	100% {
-//		top: 68px;
-//
-//	}
-//}
-//@keyframes hideSetting {
-//	0% {
-//		top: 68px;
-//	}
-//	100% {
-//		top: 700px;
-//	}
-//}
-
-
 @keyframes showSetting {
 	0% {
 		top: 700px;
 	}
-	70% {
+	50% {
 		top: 50px;
 	}
-	850% {
-		top: 80px;
+	80% {
+		top: 70px;
 	}
 	100% {
 		top: 68px;
@@ -86,7 +67,7 @@ body {
 .Setting {
 	width: 90%;
 	left: 5%;
-	top: 700px;
+	//top: 700px;
 	height: 700px;
 
 	&.Show {

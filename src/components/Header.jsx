@@ -6,6 +6,11 @@ class Header extends Component {
 			<div className="Hero bg-gray-900 text-white pt-5 pb-16">
 				<div className="mx-auto flex" style={{width: '90%'}}>
 					
+					<div className="h-8 w-8 mr-2 p-1">
+						<svg fill="currentColor" viewBox="0 0 20 20">
+							<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
+						</svg>
+					</div>
 					<div className="h-8">
 						<svg className="h-full py-2" viewBox="0 0 230 32" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round" strokeMiterlimit="2">
 							<path
@@ -15,7 +20,7 @@ class Header extends Component {
 					</div>
 					
 					{/*{this.props.page !== 'connect' &&*/}
-					<div className="ml-auto h-8 cursor-pointer text-gray-500 hover:text-white hover:bg-blue-900 rounded" onClick={this.props.toggleSetting}>
+					<div className="ml-auto h-8 cursor-pointer text-gray-500 hover:text-white hover:bg-gray-800 rounded" onClick={this.props.toggleSetting}>
 						<svg className="fill-current h-full p-1" fill="currentColor" viewBox="0 0 20 20">
 							<path
 								d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"/>

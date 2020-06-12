@@ -13,12 +13,12 @@ class Setting extends Component {
 		return (
 			<div className={`Setting ${this.props.show?'Show':'Hide'} absolute rounded-lg shadow-md overflow-hidden border-t-4 bg-white p-4`}>
 				<div className="flex">
-					<div onClick={()=>this.changeTab('publicKey')} className={`${this.state.tab === 'publicKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t border-l p-2 text-sm border-b rounded-tl-md border-r`}>publicKey</div>
-					<div onClick={()=>this.changeTab('privateKey')} className={`${this.state.tab === 'privateKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t p-2 text-sm border-b border-r`}>privateKey</div>
-					<div onClick={()=>this.changeTab('publicKeyServer')} className={`${this.state.tab === 'publicKeyServer' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t p-2 text-sm border-b rounded-tr-md`}>publicKeyServer</div>
+					<div onClick={()=>this.changeTab('publicKey')} className={`${this.state.tab === 'publicKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t border-l p-2 text-sm rounded-tl-md border-r`}>publicKey</div>
+					<div onClick={()=>this.changeTab('privateKey')} className={`${this.state.tab === 'privateKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t p-2 text-sm border-r`}>privateKey</div>
+					<div onClick={()=>this.changeTab('publicKeyServer')} className={`${this.state.tab === 'publicKeyServer' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t border-r p-2 text-sm rounded-tr-md`}>publicKeyServer</div>
 				</div>
 
-				<div className="font-mono whitespace-pre overflow-x-scroll bg-gray-100 p-2 text-sm text-gray-600 rounded-tr-md rounded-b border-l border-r border-b " style={{height:420}}>
+				<div className="font-mono whitespace-pre overflow-x-scroll bg-gray-100 p-2 text-sm text-gray-600 rounded-tr-md rounded-b border " style={{height:420}}>
 					{this.state.tab === 'publicKey' && this.props.publicKey}
 					{this.state.tab === 'privateKey' && this.props.privateKey}
 					{this.state.tab === 'publicKeyServer' && this.props.publicKeyServer}
