@@ -79,7 +79,7 @@ class App extends React.Component {
 	
 	render() {
 		return (
-			<div className="App relative overflow-hidden">
+			<div className="App relative overflow-hidden pb-2">
 				<Header {...this.state} toggleSetting={this.toggleSetting}/>
 				{this.state.page === 'connect' && <Connect handleWSConnect={this.handleWSConnect}/>}
 				{this.state.page === 'chat' && <Chat {...this.state} handleSendMessage={this.handleSendMessage} handleSendFile={this.handleSendFile}/>}

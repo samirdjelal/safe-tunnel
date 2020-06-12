@@ -1,12 +1,37 @@
+//@keyframes showSetting {
+//	0% {
+//		top: 700px;
+//	}
+//	100% {
+//		top: 68px;
+//
+//	}
+//}
+//@keyframes hideSetting {
+//	0% {
+//		top: 68px;
+//	}
+//	100% {
+//		top: 700px;
+//	}
+//}
+
+
 @keyframes showSetting {
 	0% {
 		top: 700px;
 	}
+	70% {
+		top: 50px;
+	}
+	850% {
+		top: 80px;
+	}
 	100% {
 		top: 68px;
-
 	}
 }
+
 @keyframes hideSetting {
 	0% {
 		top: 68px;
@@ -15,6 +40,7 @@
 		top: 700px;
 	}
 }
+
 
 body {
 	margin: 0;
@@ -67,7 +93,7 @@ body {
 		top: 68px;
 		animation-iteration-count: 1;
 		animation-name: showSetting;
-		animation-duration: 0.3s;
+		animation-duration: 0.5s;
 		animation-timing-function: ease-in-out;
 	}
 
@@ -78,8 +104,6 @@ body {
 		animation-duration: 0.3s;
 		animation-timing-function: ease-in-out;
 	}
-
-
 
 
 }
