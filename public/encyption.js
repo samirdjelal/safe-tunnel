@@ -1,13 +1,6 @@
 const crypto = require('crypto');
 
 
-/**
- * Encrypt a message using AES, and the key using RSA, and make a signature
- * @param publicKeyServer
- * @param privateKeyClient
- * @param plaintext
- * @returns {Promise<{signature: string, message: string, key: Buffer}>}
- */
 const encrypt = async (publicKeyServer = '', privateKeyClient = '', plaintext = '') => {
 	const RANDOM_KEY = new Date().getTime() + publicKeyServer + plaintext;
 	const KEY = crypto.createHash('md5').update(RANDOM_KEY).digest('hex');
@@ -48,23 +41,6 @@ const decrypt = async (privateKeyClient = '', publicKeyServer, key = '', cipher 
 	let MSG = Decipher.update(cipher, 'base64', 'utf8');
 	MSG += Decipher.final('utf8');
 	
-	// console.log(signature)
-	// const VERIFIED_SIGNATURE = crypto.verify(
-	// 	"sha256", Buffer.from(MSG), {
-	// 		padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
-	// 		key: publicKeyServer
-	// 	},
-	// 	Buffer.from(signature)
-	// )
-	// console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE)
-	//
-	// const client = await clients.filter(client => (client.uid === msg.uid))
-	//
-	// console.log('MSG',MSG)
-	// console.log('publicKeyServer',publicKeyServer)
-	// console.log('signature',signature)
-	//
-	
 	const VERIFIED_SIGNATURE = crypto.verify(
 		"sha256", Buffer.from(MSG), {
 			padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
@@ -92,30 +68,3 @@ const generate = () => {
 exports.generate = generate;
 exports.encrypt = encrypt;
 exports.decrypt = decrypt;
-
-
-//
-// const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {
-// 	modulusLength: 2048
-// });
-//
-// console.log('privateKey ', privateKey.)
-// console.log('publicKey ', publicKey)
-
-// const sign = crypto.createSign('SHA256');
-// sign.update(plaintext);
-// sign.end();
-// const signature = sign.sign(privateKey);
-// console.log('signature', signature)
-//
-//
-// const verify = crypto.createVerify('SHA256');
-// verify.update(plaintext);
-// verify.end();
-// console.log('verify signature', verify.verify(publicKey, signature));
-
-// return {
-// 	algorithm,
-// 	key,
-// 	plaintext
-// }
