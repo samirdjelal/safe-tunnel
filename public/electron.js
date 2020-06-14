@@ -111,11 +111,23 @@ ipcMain.on('CONNECT', async (event, args) => {
 	ws.send(JSON.stringify({
 		uid: args.uid,
 		name: args.name,
+		channel: args.channel,
 		action: args.action,
 		publicKey: publicKey
 	}));
 	
 })
+
+
+ipcMain.on('CHANGE_CHANNEL', async (event, args) => {
+	ws.send(JSON.stringify({
+		uid: args.uid,
+		name: args.name,
+		channel: args.channel,
+		action: args.action,
+	}));
+})
+
 
 ipcMain.on('SEND_MESSAGE', async (event, args) => {
 	const {message, key, signature} = await encrypt(publicKeyServer, privateKeyClient, args.body);
@@ -123,6 +135,7 @@ ipcMain.on('SEND_MESSAGE', async (event, args) => {
 	ws.send(JSON.stringify({
 		uid: args.uid,
 		name: args.name,
+		channel: args.channel,
 		message: message,
 		key: key,
 		signature: signature
@@ -136,6 +149,7 @@ ipcMain.on('SEND_FILE', async (event, args) => {
 		action: 'file',
 		uid: args.uid,
 		name: args.name,
+		channel: args.channel,
 		fileName: args.fileName,
 		fileSize: args.fileSize,
 		fileType: args.fileType,
@@ -157,6 +171,7 @@ ws.on('message', async function incoming(data) {
 		mainWindow.webContents.send('CONNECTED', {
 			uid: msg.uid,
 			name: msg.name,
+			channel: msg.channel,
 			publicKeyServer: msg.publicKeyServer,
 			action: 'connected'
 		})
@@ -171,7 +186,7 @@ ws.on('message', async function incoming(data) {
 		const {MSG, SIGNATURE} = await decrypt(privateKeyClient, publicKeyServer, msg.key, msg.message, msg.signature);
 		
 		console.log(msg.signature)
-
+		
 		const signature = SIGNATURE
 			? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.message)).digest('hex')
 			: 'INVALID SIGNATURE!';
@@ -179,6 +194,7 @@ ws.on('message', async function incoming(data) {
 		mainWindow.webContents.send('RECEIVE_FILE', {
 			uid: msg.uid,
 			name: msg.name,
+			channel: msg.channel,
 			fileName: msg.fileName,
 			fileSize: msg.fileSize,
 			fileType: msg.fileType,
@@ -195,6 +211,7 @@ ws.on('message', async function incoming(data) {
 		mainWindow.webContents.send('RECEIVE_MESSAGE', {
 			uid: msg.uid,
 			name: msg.name,
+			channel: msg.channel,
 			body: MSG,
 			signature: signature
 		})

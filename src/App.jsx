@@ -18,12 +18,14 @@ class App extends React.Component {
 			messages: [],
 			privateKey: null,
 			publicKey: null,
-			publicKeyServer: null
+			publicKeyServer: null,
+			channel: "main"
 		}
 		this.handleSendMessage = this.handleSendMessage.bind(this);
 		this.handleSendFile = this.handleSendFile.bind(this);
 		this.handleWSConnect = this.handleWSConnect.bind(this);
 		this.toggleSetting = this.toggleSetting.bind(this);
+		this.handleChangeChannel = this.handleChangeChannel.bind(this);
 	}
 	
 	componentDidMount() {
@@ -83,7 +85,7 @@ class App extends React.Component {
 				<Header {...this.state} toggleSetting={this.toggleSetting}/>
 				{this.state.page === 'connect' && <Connect handleWSConnect={this.handleWSConnect}/>}
 				{this.state.page === 'chat' && <Chat {...this.state} handleSendMessage={this.handleSendMessage} handleSendFile={this.handleSendFile}/>}
-				<Setting {...this.state} show={this.state.showSetting}/>
+				<Setting {...this.state} show={this.state.showSetting} handleChangeChannel={this.handleChangeChannel}/>
 			</div>
 		);
 	}
@@ -97,6 +99,7 @@ class App extends React.Component {
 		ipcRenderer.send('SEND_MESSAGE', {
 			uid: this.state.uid,
 			name: this.state.name,
+			channel: this.state.channel,
 			body: messageField,
 		});
 	}
@@ -109,6 +112,7 @@ class App extends React.Component {
 			ipcRenderer.send('SEND_FILE', {
 				uid: this.state.uid,
 				name: this.state.name,
+				channel: this.state.channel,
 				fileName: file.name,
 				fileSize: file.size,
 				fileType: file.type,
@@ -123,6 +127,20 @@ class App extends React.Component {
 		
 	}
 	
+	
+	handleChangeChannel() {
+		const channelName = document.getElementById('change-channel').value;
+		this.setState({channel: channelName, showSetting: false});
+		ipcRenderer.send('CHANGE_CHANNEL', {
+			uid: this.state.uid,
+			name: this.state.name,
+			channel: channelName,
+			action: 'channel'
+		});
+	}
+	
+	
+	
 	handleWSConnect() {
 		// const uidField = document.getElementById('create-uid').value;
 		const nameField = document.getElementById('create-name').value;
@@ -131,6 +149,7 @@ class App extends React.Component {
 		ipcRenderer.send('CONNECT', {
 			uid: uidField,
 			name: nameField,
+			channel: this.state.channel,
 			action: 'connect'
 		});
 	}

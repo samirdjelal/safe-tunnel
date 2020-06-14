@@ -3,8 +3,8 @@ const crypto = require('crypto');
 
 const wss = new WebSocket.Server({
 	port: 9999,
-	
 });
+
 console.log('ws://127.0.0.1:9999')
 
 const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {modulusLength: 4096});
@@ -25,10 +25,10 @@ wss.on('connection', function connection(ws) {
 		})
 		
 		for (const client of clients) {
-			if (client.ws.readyState === WebSocket.OPEN) {
-				console.log(`${disconnected_client.name} left the chat`)
+			if (client.ws.readyState === WebSocket.OPEN && disconnected_client.channel === client.channel) {
+				console.log(`${disconnected_client.name} has disconnected`)
 				client.ws.send(JSON.stringify({
-					alertMessage: `${disconnected_client.name} left the chat`
+					alertMessage: `${disconnected_client.name} has disconnected`
 				}));
 			}
 		}
@@ -42,25 +42,54 @@ wss.on('connection', function connection(ws) {
 			const client = clients.filter(client => (client.uid === msg.uid))
 			if (client.length === 0) {
 				console.log(msg.name + ' Connected!');
-				clients.push({uid: msg.uid, name: msg.name, publicKey: msg.publicKey, ws: ws});
+				clients.push({uid: msg.uid, name: msg.name, channel: msg.channel, publicKey: msg.publicKey, ws: ws});
 				
 				ws.send(JSON.stringify({
 					uid: msg.uid,
 					name: msg.name,
+					channel: msg.channel,
 					publicKeyServer: publicKeyServer,
 					action: 'connected'
 				}));
 				
 				const other_clients = clients.filter(client => (client.uid !== msg.uid))
 				for (const client of other_clients) {
-					if (client.ws.readyState === WebSocket.OPEN) {
-						console.log(`${msg.name} joined the chat`)
+					if (client.ws.readyState === WebSocket.OPEN && msg.channel === client.channel) {
+						console.log(`${msg.name} is connected`)
 						client.ws.send(JSON.stringify({
-							alertMessage: `${msg.name} joined the chat`
+							alertMessage: `${msg.name} is connected`
 						}));
 					}
 				}
 			}
+			
+		} else if (msg.action && msg.action === 'channel') {
+			const client = clients.filter(client => (client.uid === msg.uid))
+			if (client.length > 0) {
+				clients = clients.map(client => {
+					if (client.uid === msg.uid) {
+						for (const _client of clients) {
+							if (_client.ws.readyState === WebSocket.OPEN && msg.channel === _client.channel) {
+								_client.ws.send(JSON.stringify({
+									alertMessage: `${msg.name} joined the channel`
+								}));
+							}
+							if (_client.ws.readyState === WebSocket.OPEN && msg.channel !== _client.channel) {
+								_client.ws.send(JSON.stringify({
+									alertMessage: `${msg.name} left the channel`
+								}));
+							}
+						}
+						return {uid: client.uid, name: client.name, channel: msg.channel, publicKey: client.publicKey, ws: client.ws}
+						
+						
+					}
+					return client;
+				})
+				
+				
+			}
+			
 		} else {
 			const decryptedData = await crypto.privateDecrypt(
 				{
@@ -86,10 +115,10 @@ wss.on('connection', function connection(ws) {
 				Buffer.from(msg.signature)
 			)
 			console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE)
-
+			
 			
 			for (const client of clients) {
-				if (client.ws.readyState === WebSocket.OPEN) {
+				if (client.ws.readyState === WebSocket.OPEN && msg.channel === client.channel) {
 					const RANDOM_KEY = new Date().getTime() + client.publicKey + MSG;
 					const KEY = crypto.createHash('md5').update(RANDOM_KEY).digest('hex');
 					const IV = KEY.split('').reverse().join('').substr(16); // reverse the md5(key), and take last 16 char
@@ -111,6 +140,7 @@ wss.on('connection', function connection(ws) {
 							action: 'file',
 							uid: msg.uid,
 							name: msg.name,
+							channel: msg.channel,
 							fileName: msg.fileName,
 							fileSize: msg.fileSize,
 							fileType: msg.fileType,
@@ -122,6 +152,7 @@ wss.on('connection', function connection(ws) {
 						client.ws.send(JSON.stringify({
 							uid: msg.uid,
 							name: msg.name,
+							channel: msg.channel,
 							message: CMSG,
 							key: CKEY,
 							signature: SIGNATURE
