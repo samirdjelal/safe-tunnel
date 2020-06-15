@@ -107,7 +107,7 @@ wss.on('connection', function connection(ws) {
 				},
 				Buffer.from(msg.signature)
 			)
-			
+			console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE);
 			
 			for (const client of clients) {
 				if (client.ws.readyState === WebSocket.OPEN && msg.channel === client.channel) {
@@ -127,29 +127,36 @@ wss.on('connection', function connection(ws) {
 						padding: crypto.constants.RSA_PKCS1_PSS_PADDING
 					})
 					
-					if (msg.action && msg.action === 'file') {
-						client.ws.send(JSON.stringify({
-							action: 'file',
-							uid: msg.uid,
-							name: msg.name,
-							channel: msg.channel,
-							fileName: msg.fileName,
-							fileSize: msg.fileSize,
-							fileType: msg.fileType,
-							message: CMSG,
-							key: CKEY,
-							signature: SIGNATURE
-						}));
-					} else {
-						client.ws.send(JSON.stringify({
-							uid: msg.uid,
-							name: msg.name,
-							channel: msg.channel,
-							message: CMSG,
-							key: CKEY,
-							signature: SIGNATURE
-						}));
+					if (msg.uid !== client.uid) {
+						
+						if (msg.action && msg.action === 'file') {
+							console.log(`sending file to ${client.name}`)
+							console.log(`file sent to ${client.name}`)
+							client.ws.send(JSON.stringify({
+								action: 'file',
+								uid: msg.uid,
+								name: msg.name,
+								channel: msg.channel,
+								fileName: msg.fileName,
+								fileSize: msg.fileSize,
+								fileType: msg.fileType,
+								message: CMSG,
+								key: CKEY,
+								signature: SIGNATURE
+							}));
+						} else {
+							client.ws.send(JSON.stringify({
+								uid: msg.uid,
+								name: msg.name,
+								channel: msg.channel,
+								message: CMSG,
+								key: CKEY,
+								signature: SIGNATURE
+							}));
+						}
 					}
+				
+				
 				}
 			}
 		}

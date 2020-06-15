@@ -106,6 +106,12 @@ class App extends React.Component {
 	
 	handleSendFile(file) {
 		// console.log(window.URL.createObjectURL(file))
+		if (file.size > 1024*1024*20) {
+			this.setState(prevState => ({
+				messages: [...prevState.messages, {alert: 'MAXIMUM FILE SIZE LIMIT IS 20 MB'}]
+			}))
+			return;
+		}
 		const reader = new FileReader()
 		reader.onload = (e) => {
 			// console.log('file loaded ', e.target.result)

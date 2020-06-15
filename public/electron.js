@@ -140,6 +140,18 @@ ipcMain.on('SEND_MESSAGE', async (event, args) => {
 		key: key,
 		signature: signature
 	}));
+	
+	const _signature = signature
+		? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(args.body)).digest('hex')
+		: 'INVALID SIGNATURE!';
+	mainWindow.webContents.send('RECEIVE_MESSAGE', {
+		uid: args.uid,
+		name: args.name,
+		channel: args.channel,
+		body: args.body,
+		signature: _signature
+	})
+	
 })
 
 ipcMain.on('SEND_FILE', async (event, args) => {
@@ -158,9 +170,20 @@ ipcMain.on('SEND_FILE', async (event, args) => {
 		signature: signature
 	}));
 	
-	mainWindow.webContents.send('ALERT', {
-		alert: 'file sent'
+	const _signature = signature
+		? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(args.fileData)).digest('hex')
+		: 'INVALID SIGNATURE!';
+	mainWindow.webContents.send('RECEIVE_FILE', {
+		uid: args.uid,
+		name: args.name,
+		channel: args.channel,
+		fileName: args.fileName,
+		fileSize: args.fileSize,
+		fileType: args.fileType,
+		fileData: args.fileData,
+		signature: _signature
 	})
+	
 })
 
 ws.on('message', async function incoming(data) {
