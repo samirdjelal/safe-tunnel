@@ -20,7 +20,12 @@ class Chat extends Component {
 		return (
 			<div className="mx-auto -mt-12 mb-5 bg-white rounded-lg shadow-md overflow-hidden" style={{width: '90%'}}>
 				
-				<div id="message-container" className="overflow-y-scroll p-4 pt-2 border-t-4" style={{height: 438}}>
+				<div className="text-xs text-center border-b text-white font-bold w-full border-t-4" style={{backgroundColor:'#fbd38d', borderColor:'#f6ad55',fontSize: 12, padding: '5px 0', textShadow: '#ab4400 1px 1px 3px'}}>
+					END-TO-END ENCRYPTION ENABLED
+				</div>
+				
+				{/*<div id="message-container" className="overflow-y-scroll p-4 pt-2 border-t-4" style={{height: 438}}>*/}
+				<div id="message-container" className="overflow-y-scroll p-4 pt-2" style={{height: 405}}>
 					
 					{this.props.messages.map((message, index) => {
 						
