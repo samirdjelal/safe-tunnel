@@ -19,14 +19,12 @@ wss.on('connection', function connection(ws) {
 		clients = clients.filter(client => {
 			if (client.ws === ws) {
 				disconnected_client = client;
-				console.log(client.name + ' Disconnected!');
 			}
 			return client.ws !== ws;
 		})
 		
 		for (const client of clients) {
 			if (client.ws.readyState === WebSocket.OPEN && disconnected_client.channel === client.channel) {
-				console.log(`${disconnected_client.name} has disconnected`)
 				client.ws.send(JSON.stringify({
 					alertMessage: `${disconnected_client.name} has disconnected`
 				}));
@@ -41,7 +39,6 @@ wss.on('connection', function connection(ws) {
 		if (msg.action && msg.action === 'connect') {
 			const client = clients.filter(client => (client.uid === msg.uid))
 			if (client.length === 0) {
-				console.log(msg.name + ' Connected!');
 				clients.push({uid: msg.uid, name: msg.name, channel: msg.channel, publicKey: msg.publicKey, ws: ws});
 				
 				ws.send(JSON.stringify({
@@ -55,7 +52,6 @@ wss.on('connection', function connection(ws) {
 				const other_clients = clients.filter(client => (client.uid !== msg.uid))
 				for (const client of other_clients) {
 					if (client.ws.readyState === WebSocket.OPEN && msg.channel === client.channel) {
-						console.log(`${msg.name} is connected`)
 						client.ws.send(JSON.stringify({
 							alertMessage: `${msg.name} is connected`
 						}));
@@ -68,26 +64,23 @@ wss.on('connection', function connection(ws) {
 			if (client.length > 0) {
 				clients = clients.map(client => {
 					if (client.uid === msg.uid) {
-						for (const _client of clients) {
-							if (_client.ws.readyState === WebSocket.OPEN && msg.channel === _client.channel) {
-								_client.ws.send(JSON.stringify({
-									alertMessage: `${msg.name} joined the channel`
-								}));
-							}
-							if (_client.ws.readyState === WebSocket.OPEN && msg.channel !== _client.channel) {
-								_client.ws.send(JSON.stringify({
-									alertMessage: `${msg.name} left the channel`
-								}));
-							}
-						}
 						return {uid: client.uid, name: client.name, channel: msg.channel, publicKey: client.publicKey, ws: client.ws}
-						
-						
 					}
 					return client;
 				})
 				
-				
+				for (const _client of clients) {
+					if (_client.ws.readyState === WebSocket.OPEN && _client.uid !== msg.uid && _client.channel === msg.channel) {
+						_client.ws.send(JSON.stringify({
+							alertMessage: `${msg.name} joined the channel`
+						}));
+					}
+					if (_client.ws.readyState === WebSocket.OPEN && _client.uid !== msg.uid && _client.channel !== msg.channel) {
+						_client.ws.send(JSON.stringify({
+							alertMessage: `${msg.name} left the channel`
+						}));
+					}
+				}
 			}
 			
 		} else {
@@ -114,7 +107,6 @@ wss.on('connection', function connection(ws) {
 				},
 				Buffer.from(msg.signature)
 			)
-			console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE)
 			
 			
 			for (const client of clients) {

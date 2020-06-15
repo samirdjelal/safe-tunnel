@@ -19,7 +19,7 @@ class App extends React.Component {
 			privateKey: null,
 			publicKey: null,
 			publicKeyServer: null,
-			channel: "main"
+			channel: "general"
 		}
 		this.handleSendMessage = this.handleSendMessage.bind(this);
 		this.handleSendFile = this.handleSendFile.bind(this);
