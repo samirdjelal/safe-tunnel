@@ -58,12 +58,15 @@ wss.on('connection', function connection(ws) {
 					}
 				}
 			}
+		 // todo: return 'user already exists ...'
 			
 		} else if (msg.action && msg.action === 'channel') {
 			const client = clients.filter(client => (client.uid === msg.uid))
+			let previousChannel = '';
 			if (client.length > 0) {
 				clients = clients.map(client => {
 					if (client.uid === msg.uid) {
+						previousChannel = client.channel;
 						return {uid: client.uid, name: client.name, channel: msg.channel, publicKey: client.publicKey, ws: client.ws}
 					}
 					return client;
@@ -75,7 +78,7 @@ wss.on('connection', function connection(ws) {
 							alertMessage: `${msg.name} joined the channel`
 						}));
 					}
-					if (_client.ws.readyState === WebSocket.OPEN && _client.uid !== msg.uid && _client.channel !== msg.channel) {
+					if (_client.ws.readyState === WebSocket.OPEN && _client.uid !== msg.uid && _client.channel === previousChannel) {
 						_client.ws.send(JSON.stringify({
 							alertMessage: `${msg.name} left the channel`
 						}));
@@ -108,9 +111,9 @@ wss.on('connection', function connection(ws) {
 				Buffer.from(msg.signature)
 			)
 			console.log('VERIFIED_SIGNATURE', VERIFIED_SIGNATURE);
-			
+			if (VERIFIED_SIGNATURE !== true) return;
 			for (const client of clients) {
-				if (client.ws.readyState === WebSocket.OPEN && msg.channel === client.channel) {
+				if (client.ws.readyState === WebSocket.OPEN && msg.channel === client.channel && msg.uid !== client.uid) {
 					const RANDOM_KEY = new Date().getTime() + client.publicKey + MSG;
 					const KEY = crypto.createHash('md5').update(RANDOM_KEY).digest('hex');
 					const IV = KEY.split('').reverse().join('').substr(16); // reverse the md5(key), and take last 16 char
@@ -127,36 +130,32 @@ wss.on('connection', function connection(ws) {
 						padding: crypto.constants.RSA_PKCS1_PSS_PADDING
 					})
 					
-					if (msg.uid !== client.uid) {
-						
-						if (msg.action && msg.action === 'file') {
-							console.log(`sending file to ${client.name}`)
-							console.log(`file sent to ${client.name}`)
-							client.ws.send(JSON.stringify({
-								action: 'file',
-								uid: msg.uid,
-								name: msg.name,
-								channel: msg.channel,
-								fileName: msg.fileName,
-								fileSize: msg.fileSize,
-								fileType: msg.fileType,
-								message: CMSG,
-								key: CKEY,
-								signature: SIGNATURE
-							}));
-						} else {
-							client.ws.send(JSON.stringify({
-								uid: msg.uid,
-								name: msg.name,
-								channel: msg.channel,
-								message: CMSG,
-								key: CKEY,
-								signature: SIGNATURE
-							}));
-						}
+					
+					if (msg.action && msg.action === 'file') {
+						client.ws.send(JSON.stringify({
+							action: 'file',
+							uid: msg.uid,
+							name: msg.name,
+							channel: msg.channel,
+							fileName: msg.fileName,
+							fileSize: msg.fileSize,
+							fileType: msg.fileType,
+							message: CMSG,
+							key: CKEY,
+							signature: SIGNATURE
+						}));
+					} else {
+						client.ws.send(JSON.stringify({
+							uid: msg.uid,
+							name: msg.name,
+							channel: msg.channel,
+							message: CMSG,
+							key: CKEY,
+							signature: SIGNATURE
+						}));
 					}
-				
-				
+					
+					
 				}
 			}
 		}

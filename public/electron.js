@@ -97,6 +97,8 @@ app.on('activate', () => {
 let ws = new WebSocket(WebSocketURL, {
 	perMessageDeflate: false
 })
+
+
 // ws.on('open', function open() {});
 
 ipcMain.on('CONNECT', async (event, args) => {
