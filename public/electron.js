@@ -109,7 +109,6 @@ ipcMain.on('CONNECT', async (event, args) => {
 	})
 	privateKeyClient = privateKey;
 	publicKeyClient = publicKey;
-	
 	ws.send(JSON.stringify({
 		uid: args.uid,
 		name: args.name,
@@ -117,7 +116,6 @@ ipcMain.on('CONNECT', async (event, args) => {
 		action: args.action,
 		publicKey: publicKey
 	}));
-	
 })
 
 
@@ -215,7 +213,7 @@ ws.on('message', async function incoming(data) {
 		console.log(msg.signature)
 		
 		const signature = SIGNATURE
-			? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.message)).digest('hex')
+			? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(MSG)).digest('hex')
 			: 'INVALID SIGNATURE!';
 		
 		mainWindow.webContents.send('RECEIVE_FILE', {
@@ -231,7 +229,7 @@ ws.on('message', async function incoming(data) {
 	} else {
 		const {MSG, SIGNATURE} = await decrypt(privateKeyClient, publicKeyServer, msg.key, msg.message, msg.signature);
 		const signature = SIGNATURE
-			? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(msg.message)).digest('hex')
+			? 'VALID SIGNATURE: ' + crypto.createHash('sha256').update(Buffer.from(MSG)).digest('hex')
 			: 'INVALID SIGNATURE!';
 		
 		console.log(signature)

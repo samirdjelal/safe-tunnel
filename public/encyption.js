@@ -16,13 +16,11 @@ const encrypt = async (publicKeyServer = '', privateKeyClient = '', plaintext = 
 		key: privateKeyClient,
 		padding: crypto.constants.RSA_PKCS1_PSS_PADDING
 	})
-	// .toString("base64")
 	return {
 		message: CMSG,
 		key: CKEY,
 		signature: SIGNATURE
 	}
-	
 }
 
 const decrypt = async (privateKeyClient = '', publicKeyServer, key = '', cipher = '', signature = '') => {

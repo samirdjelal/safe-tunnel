@@ -7,6 +7,8 @@ class Chat extends Component {
 		this.handleInputField = this.handleInputField.bind(this);
 		this.handleFileChange = this.handleFileChange.bind(this);
 		this.downloadFile = this.downloadFile.bind(this);
+		this.showSignature = this.showSignature.bind(this);
+		this.hideSignature = this.hideSignature.bind(this);
 	}
 	
 	render() {
@@ -20,7 +22,8 @@ class Chat extends Component {
 		return (
 			<div className="mx-auto -mt-12 mb-5 bg-white rounded-lg shadow-md overflow-hidden" style={{width: '90%'}}>
 				
-				<div className="text-xs text-center border-b text-white font-bold w-full border-t-4" style={{backgroundColor:'#fbd38d', borderColor:'#f6ad55',fontSize: 12, padding: '5px 0', textShadow: '#ab4400 1px 1px 3px'}}>
+				<div className="text-xs text-center border-b text-white font-bold w-full border-t-4"
+				     style={{backgroundColor: '#fbd38d', borderColor: '#f6ad55', fontSize: 12, padding: '5px 0', textShadow: '#ab4400 1px 1px 3px'}}>
 					END-TO-END ENCRYPTION ENABLED
 				</div>
 				
@@ -85,12 +88,17 @@ class Chat extends Component {
 									{message.name.charAt(0).toUpperCase()}
 								</div>
 								
-								<div className="flex-1">
+								<div className="flex-1 relative">
 									
 									<div className={`px-2 pb-1 uppercase text-xs font-bold ${me === message.uid ? 'text-blue-400' : 'text-red-400'}`}>{message.name}</div>
 									
 									<div className="p-3 rounded-lg overflow-hidden bg-gray-100 shadow text-gray-700 w-auto inline-block break-words "
-									     style={{direction: 'ltr'}} title={message.signature}>{message.body}</div>
+									     style={{direction: 'ltr'}} title={message.signature} onMouseEnter={this.showSignature} onMouseLeave={this.hideSignature} index={index}>{message.body}</div>
+									
+									<div id={`signature-${index}`} style={{fontSize: 10}} className="hidden text-left absolute z-50 text-sm bg-green-100 py-2 px-2 rounded-md text-green-600 break-words w-full">
+										{message.signature}
+									</div>
+								
 								</div>
 							
 							</div>
@@ -130,6 +138,15 @@ class Chat extends Component {
 		);
 	}
 	
+	showSignature(e) {
+		const index = e.target.getAttribute('index')
+		document.getElementById('signature-' + index).classList.remove('hidden');
+	}
+	
+	hideSignature(e) {
+		const index = e.target.getAttribute('index')
+		document.getElementById('signature-' + index).classList.add('hidden');
+	}
 	
 	handleInputField(e) {
 		if (e.key === 'Enter') this.handleSendMessage()

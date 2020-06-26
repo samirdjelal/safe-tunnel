@@ -148,8 +148,7 @@ class App extends React.Component {
 	
 	
 	handleWSConnect() {
-		// const uidField = document.getElementById('create-uid').value;
-		const nameField = document.getElementById('create-name').value;
+		const nameField = document.getElementById('create-name').value.toLowerCase();
 		const uidField = crypto.createHash('sha256').update(nameField).digest('hex');
 		
 		ipcRenderer.send('CONNECT', {
