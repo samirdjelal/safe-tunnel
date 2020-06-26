@@ -57,6 +57,11 @@ wss.on('connection', function connection(ws) {
 						}));
 					}
 				}
+			}else{
+				ws.send(JSON.stringify({
+					action: 'user_exists'
+				}));
+				
 			}
 		 // todo: return 'user already exists ...'
 			

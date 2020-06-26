@@ -4,7 +4,7 @@ class Setting extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			tab: 'publicKey'
+			tab: 'privateKey'
 		}
 		this.changeTab = this.changeTab.bind(this);
 		this.handleInputField = this.handleInputField.bind(this);
@@ -19,26 +19,32 @@ class Setting extends Component {
 					<div className="relative">
 						<input type="text" defaultValue={this.props.channel} id="change-channel" onKeyPress={this.handleInputField}
 						       className="block border leading-3 p-3 w-full focus:outline-none focus:shadow-outline rounded pr-24 "/>
-						<div className="top-0 right-0 h-full absolute px-3 py-3 rounded-r border cursor-pointer bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-600"
-						     onClick={this.props.handleChangeChannel}>Switch
+						<div
+							className="top-0 right-0 h-full absolute px-3 py-3 rounded-r border cursor-pointer bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-600"
+							onClick={this.props.handleChangeChannel}>Switch
 						</div>
 					</div>
 				
 				</div>
 				
+				<div className="mb-2 text-sm">RSA ( 4096 bit )</div>
 				<div className="flex">
-					<div onClick={() => this.changeTab('publicKey')}
-					     className={`${this.state.tab === 'publicKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t border-l p-2 text-sm rounded-tl-md border-r`}>publicKey
+					<div onClick={() => this.changeTab('privateKey')} title="Private Key of the Current Client"
+					     className={`${this.state.tab === 'privateKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t border-l p-2 text-sm rounded-tl-md border-r`}>
+						privateKey
 					</div>
-					<div onClick={() => this.changeTab('privateKey')}
-					     className={`${this.state.tab === 'privateKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t p-2 text-sm border-r`}>privateKey
+					<div onClick={() => this.changeTab('publicKey')} title="Public Key of the Current Client"
+					     className={`${this.state.tab === 'publicKey' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t p-2 text-sm border-r rounded-tr-md`}>
+						publicKey
 					</div>
-					<div onClick={() => this.changeTab('publicKeyServer')}
-					     className={`${this.state.tab === 'publicKeyServer' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t border-r p-2 text-sm rounded-tr-md`}>publicKeyServer
+					<div onClick={() => this.changeTab('publicKeyServer')} title="Public Key of the Server"
+					     className={`${this.state.tab === 'publicKeyServer' ? 'bg-gray-100 text-gray-700' : 'bg-gray-200 text-gray-600'} cursor-pointer border-t border-r p-2 text-sm ml-2 rounded-tl-md rounded-tr-md`}>
+						publicKeyServer
 					</div>
 				</div>
 				
-				<div className="font-mono whitespace-pre overflow-x-scroll bg-gray-100 p-2 text-sm text-gray-600 rounded-tr-md rounded-b border " style={{height: 340}}>
+				<div className="font-mono whitespace-pre overflow-x-scroll bg-gray-100 p-2 text-sm text-gray-600 rounded-tr-md rounded-b border "
+				     style={{height: 310}}>
 					{this.state.tab === 'publicKey' && this.props.publicKey}
 					{this.state.tab === 'privateKey' && this.props.privateKey}
 					{this.state.tab === 'publicKeyServer' && this.props.publicKeyServer}

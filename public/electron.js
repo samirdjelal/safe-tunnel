@@ -201,6 +201,8 @@ ws.on('message', async function incoming(data) {
 			action: 'connected'
 		})
 		
+	} else if (msg.action && msg.action === 'user_exists') {
+		mainWindow.webContents.send('USER_EXISTS')
 	} else if (msg.alertMessage) {
 		console.log('alert ========> ', msg.alertMessage)
 		mainWindow.webContents.send('ALERT', {
