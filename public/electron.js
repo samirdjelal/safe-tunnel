@@ -8,9 +8,9 @@ const crypto = require('crypto');
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-const WebSocketURL = 'ws://127.0.0.1:9999';
+// const WebSocketURL = 'ws://127.0.0.1:9999';
 // const WebSocketURL = 'ws://192.168.0.100:9999';
-// const WebSocketURL = 'ws://dzprime.com:9999';
+const WebSocketURL = 'ws://dzprime.com:9999';
 
 let privateKeyClient = '';
 let publicKeyClient = '';
@@ -51,7 +51,7 @@ function createWindow() {
 	
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`).then(r => console.log(r));
 	mainWindow.on('closed', () => mainWindow = null);
-	mainWindow.webContents.openDevTools();
+	if(isDev) mainWindow.webContents.openDevTools();
 	
 	// if (isDev) {
 	// 	mainWindow.webContents.openDevTools();
