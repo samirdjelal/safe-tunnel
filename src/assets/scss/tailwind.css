@@ -2,4 +2,6 @@
 
 @tailwind components;
 
+/* Start purging... */
 @tailwind utilities;
+/* Stop purging. */

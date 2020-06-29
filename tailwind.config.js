@@ -1,5 +1,13 @@
 module.exports = {
-	purge: [],
+	purge: {
+		enabled: true,
+		content: [
+			'./public/**/*.html',
+			'./src/**/*.html',
+			'./src/**/*.jsx',
+			'./src/**/*.js',
+		],
+	},
 	theme: {
 		extend: {
 			boxShadow: {

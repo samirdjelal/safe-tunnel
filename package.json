@@ -54,5 +54,31 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
+	},
+	"build": {
+		"productName": "Safe Tunnel",
+		"appId": "com.samirdjelal.safe-tunnel",
+		"files": [
+			"build/**/*",
+			"node_modules/**/*"
+		],
+		"directories": {
+			"buildResources": "build"
+		},
+		"copyright": "Copyright © 2020 Samir Djelal",
+		"mac": {
+			"icon": "./build/icon.icns",
+			"category": "public.app-category.utilities",
+			"target": [
+				"zip",
+				"dmg"
+			]
+		},
+		"win": {
+			"icon": "./build/icon.png"
+		},
+		"nsis": {
+			"perMachine": true
+		}
 	}
 }
