@@ -7,3 +7,7 @@ node server.js
 ```
 
 
+#### Running a client.
+```
+npm run dev
+```
