@@ -17,4 +17,5 @@ npm run dev
 
 ## Screenshot
 
-![Safe Tunnel](screenshot.png)
+<img src="screenshot.png" width="600px" alt="Safe Tunnel"/>
+
