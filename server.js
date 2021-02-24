@@ -2,10 +2,10 @@ const WebSocket = require('ws');
 const crypto = require('crypto');
 
 const wss = new WebSocket.Server({
-	port: 9999,
+	port: 80,
 });
 
-console.log('ws://127.0.0.1:9999')
+console.log('ws://127.0.0.1:80')
 
 const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {modulusLength: 4096});
 const privateKeyServer = privateKey.export({format: "pem", type: "pkcs1"});
