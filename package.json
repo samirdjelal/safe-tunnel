@@ -36,7 +36,8 @@
 		"pack-macos-dmg": "electron-builder --macos dmg -c.extraMetadata.main=build/electron.js -c.mac.identity=null",
 		"pack-macos-zip": "electron-builder --macos zip -c.extraMetadata.main=build/electron.js -c.mac.identity=null",
 		"pack-linux-deb": "electron-builder --linux deb -c.extraMetadata.main=build/electron.js",
-		"pack-linux-appimage": "electron-builder --linux AppImage -c.extraMetadata.main=build/electron.js"
+		"pack-linux-appimage": "electron-builder --linux AppImage -c.extraMetadata.main=build/electron.js",
+		"heroku-postbuild": "node server.js"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
