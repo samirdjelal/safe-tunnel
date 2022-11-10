@@ -12,7 +12,7 @@
 	"devDependencies": {
 		"concurrently": "^5.2.0",
 		"cross-env": "^7.0.2",
-		"electron": "^9.0.2",
+		"electron": "^18.3.7",
 		"electron-builder": "^22.7.0",
 		"electron-devtools-installer": "^3.0.0",
 		"javascript-obfuscator": "^1.1.0",
